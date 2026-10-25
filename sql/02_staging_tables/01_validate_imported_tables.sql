@@ -173,4 +173,27 @@ An additional empty column named F5 was also imported into Regions.
 These are import artefacts, probably caused by the formatted Excel ranges.
 They should be excluded from the analytical model without altering
 the original Excel source files.
+*/  
+
+
+/*
+Before documenting F5 as an entirely empty column, 
+we should quantify it rather than rely only on the ten-row sample.
 */
+
+-- Check whether the unexpected F5 column contains any values.
+-- COUNT(F5) counts only rows where F5 is not NULL.
+
+SELECT
+    COUNT(*) AS Total_Region_Rows,
+    COUNT(F5) AS Rows_With_F5_Value
+FROM dbo.Regions;
+
+/* 
+After executing the query abovw, Rows_With_F5_Value returned  0, 
+so we can confidently record that F5 is an entirely empty import artefact with:
+- total Regions rows: 157;
+- rows containing an F5 value: 0.
+*/
+
+
