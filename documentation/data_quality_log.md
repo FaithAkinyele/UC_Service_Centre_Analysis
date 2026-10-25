@@ -152,3 +152,66 @@ Identified and quantified. Treatment not yet applied.
 
 The cause is inferred from the import structure and has not been confirmed with a source-system owner.
 
+
+
+
+
+\## DQ-003 — Duplicate Claim\_ID values in ClaimsReceived
+
+
+
+\*\*Table:\*\* `dbo.ClaimsReceived`  
+
+\*\*Field:\*\* `Claim\_ID`  
+
+\*\*Issue type:\*\* Primary-key uniqueness and conflicting records
+
+
+
+\*\*Evidence:\*\*  
+
+The table contains 30,613 rows and 30,565 distinct Claim\_ID values. SQL checks identified 48 duplicated Claim\_ID groups, each occurring twice, meaning 96 rows are involved and there are 48 excess occurrences.
+
+
+
+Of the 48 duplicated Claim\_ID groups, 32 are exact duplicates across the tested fields. The remaining 16 contain different raw Submission\_Channel values while the other tested fields agree.
+
+
+
+\*\*Likely effect:\*\*  
+
+Counting rows would overstate claims received by 48. Duplicate claims could multiply records when joined to completion, outcome or contact tables. Submission-channel analysis may also be unreliable for the conflicting records.
+
+
+
+\*\*Proposed treatment:\*\*  
+
+Preserve the imported source table unchanged. Use distinct valid Claim\_ID values for claims-received measures. Remove exact duplicate copies only within a documented cleaned layer. Review and standardise synonymous channel labels, such as Phone and Telephone, while retaining genuinely conflicting channel values for investigation rather than selecting one arbitrarily.
+
+
+
+\*\*Remaining limitation:\*\*  
+
+The supplied data does not identify which submission-channel value is authoritative where genuinely different channels are recorded for the same claim.
+
+
+
+\*\*Status:\*\*  
+
+Quantified; cleaning rule partly agreed, with conflicting channels requiring further review.
+
+
+### DQ-004 — Completely blank rows in ClaimsCompleted
+
+- **Table:** ClaimsCompleted
+
+- **Issue:** The imported table contains 3,585 completely blank rows.
+
+- **Evidence:** There are 30,613 imported rows, but only 27,028 contain a Completion_ID. All 3,585 rows without a Completion_ID are blank across every completion field, and none are partially populated.
+
+- **Effect:** Counting all imported rows would overstate the number of completion records by 3,585 and could distort completion measures.
+
+- **Treatment:** Preserve the original source data, but exclude completely blank rows from the cleaned analytical layer.
+
+- **Remaining limitation:** The blank rows appear to be Excel-import artefacts caused by the formatted worksheet range. This interpretation should be confirmed against the source workbook and import process.
+
